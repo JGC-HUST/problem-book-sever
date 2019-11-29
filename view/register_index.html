@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>用户注册</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="/static/images/党徽.jpg" />
+  <link rel="stylesheet" type="text/css" href="/static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/fonts/iconic/css/material-design-iconic-font.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/util.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+
+  <div class="limiter">
+    <div class="container-login100">
+      <div class="wrap-login100" id="app">
+        <el-alert title="注册成功" type="success" effect="dark" v-if="type == 'success'">
+        </el-alert>
+        <el-alert title="服务器出错" type="warning" effect="dark" v-else-if="type == 'fail'">
+        </el-alert>
+
+        <form class="login100-form validate-form">
+
+          <span class="login100-form-title p-b-48" style="font-family: '微软雅黑';">
+            行测错题本
+          </span>
+
+          <div class="wrap-input100 validate-input" data-validate="请输入用户名">
+            <input class="input100" type="text" name="username" id="usr">
+            <span class="focus-input100" data-placeholder="用户名"></span>
+          </div>
+
+          <div class="wrap-input100 validate-input" data-validate="请输入邮箱">
+            <input class="input100" type="email" name="useremail" id="email">
+            <span class="focus-input100" data-placeholder="邮箱"></span>
+          </div>
+
+          <div class="wrap-input100 validate-input" data-validate="请输入密码">
+            <span class="btn-show-pass">
+              <i class="zmdi zmdi-eye"></i>
+            </span>
+            <input class="input100" type="password" name="password" id="pwd">
+            <span class="focus-input100" data-placeholder="密码"></span>
+          </div>
+
+          <div class="container-login100-form-btn">
+            <div class="wrap-login100-form-btn">
+              <div class="login100-form-bgbtn"></div>
+              <button class="login100-form-btn">
+                注 册
+              </button>
+            </div>
+          </div>
+
+          <div class="text-center p-t-115">
+            <a class="txt2" href="/index">
+              登录
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/axios.min.js"></script>
+  <script>
+    function validate( input ) {
+      if ( $( input ).attr( 'type' ) == 'email' || $( input ).attr( 'name' ) == 'email' ) {
+        if ( $( input ).val().trim().match( /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/ ) == null ) {
+          return false;
+        }
+      }
+      else {
+        if ( $( input ).val().trim() == '' ) {
+          return false;
+        }
+      }
+    }
+    function showValidate( input ) {
+      var thisAlert = $( input ).parent();
+      $( thisAlert ).addClass( 'alert-validate' );
+    }
+    $( '.login100-form-btn' ).click( ( e ) => {
+      e.preventDefault();
+      let input = $( '.validate-input .input100' );
+      let check = true;
+      for ( let i = 0; i < input.length; i++ ) {
+        if ( validate( input[ i ] ) == false ) {
+          showValidate( input[ i ] );
+          check = false;
+        }
+      }
+      if ( !check ) {
+        return check;
+      }
+      axios.post( '/register/signup', { username: $( '#usr' ).val(), password: $( '#pwd' ).val(), useremail: $( '#email' ).val() } )
+        .then( res => {
+          let code = res.data.data.code;
+          if ( code === 1 ) {
+            $( '#usr' ).val( '' );
+            $( '#pwd' ).val( '' );
+            $( '#email' ).val( '' );
+            console.log( "注册成功" );
+          }
+        } )
+        .catch( error => { console.log( error ) } )
+    } );
+  </script>
+</body>
+
+</html>
